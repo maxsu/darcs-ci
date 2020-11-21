@@ -1,0 +1,26 @@
+serve_http() {
+    lightpid=$((10000 + $$ % 30000))
+    cat > light.conf <<EOF
+    server.document-root       = "$PWD"
+    server.errorlog            = "$PWD/error.log"
+    server.port                = $lightpid
+    server.bind                = "localhost"
+    server.pid-file            = "$PWD/light.pid"
+    index-file.names           = ()
+EOF
+    trap "finish_http \"$PWD\"" EXIT
+    lighttpd -f light.conf || exit 200
+    ps `cat light.pid` > /dev/null 2>&1 || exit 200
+    baseurl="http://localhost:$lightpid"
+}
+
+finish_http() {
+    test -e "$1/light.pid" && kill `cat "$1/light.pid"` || true
+}
+
+check_remote_http() {
+  if ! curl -fI "$1"; then
+    echo Cannot reach "$1"
+    exit 200
+  fi
+}

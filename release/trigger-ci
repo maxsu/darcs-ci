@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+test -d _darcs || (echo need to be in a darcs repo >&2 && false)
+# to start fresh:
+# rm -rf .git
+branch=$(basename $(pwd))
+git init
+git checkout -B $branch
+git add $(darcs show files --no-directories --pending)
+git add release/distributed-context release/distributed-version
+git commit -m snapshot
+git push -f --set-upstream git@github.com:bfrk/darcs-ci.git $branch

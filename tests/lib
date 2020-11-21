@@ -1,0 +1,119 @@
+# This is a -*- sh -*- library.
+
+. ./env
+
+## I would use the builtin !, but that has the wrong semantics.
+not () { "$@" && exit 1 || :; }
+
+# trick: OS-detection (if needed)
+os_is_windows() {
+  echo $OS | grep -i windows
+}
+
+abort_windows () {
+if os_is_windows; then
+  echo This test does not work on Windows
+  exit 200
+fi
+}
+
+if os_is_windows; then
+  IFS=$' \t\n\r'
+  git config --global core.autocrlf input
+fi
+
+pwd() {
+    ghc --make -o hspwd "$TESTBIN/hspwd.hs" > /dev/null
+    "./hspwd"
+}
+
+which() {
+    type -P "$@" | cut -d' ' -f 3-
+}
+
+# switch locale to one supporting the latin-9 (ISO 8859-15) character set if possible, otherwise skip test
+
+no_latin9_locale_warning () {
+    echo "no ISO 8859-15 locale found, skipping test"
+    echo "try (eg): sudo locale-gen en_US.ISO-8859-15"
+}
+
+switch_to_latin9_locale () {
+    if os_is_windows; then
+        chcp.com 28605
+    else
+        if ! which locale ; then
+            echo "no locale command, skipping test"
+            exit 200
+        fi
+
+        # look for a ISO 8859-15 locale. locale -a shows iso885915, on ubuntu at least
+        latin9_locale=`locale -a | egrep --text -i iso8859-?15 | head -n 1` || (no_latin9_locale_warning; exit 200)
+        test -n "$latin9_locale" || (no_latin9_locale_warning; exit 200)
+
+        echo "Using locale $latin9_locale"
+        export LC_ALL=$latin9_locale
+        echo "character encoding is now `locale charmap`"
+    fi
+}
+
+# switch locale to utf8 if supported if there's a locale command, skip test
+# otherwise
+switch_to_utf8_locale () {
+    if os_is_windows; then
+        chcp.com 65001
+    else
+        if ! which locale ; then
+            echo "no locale command"
+            exit 200 # skip test
+        fi
+
+        utf8_locale=`locale -a | grep --text .utf8 | head -n 1` || exit 200
+        test -n "$utf8_locale" || exit 200
+
+        echo "Using locale $utf8_locale"
+        export LC_ALL=$utf8_locale
+        echo "character encoding is now `locale charmap`"
+    fi
+}
+
+# check that the specified string appears precisely once in the output
+grep-once() {
+    grep -c "$@" | grep -w 1
+}
+
+require_ghc() {
+    test $GHC_VERSION -ge $1 || exit 200
+}
+
+skip-formats() {
+    for f in "$@"; do grep -q $f $HOME/.darcs/defaults && exit 200 || true; done
+}
+
+only-format() {
+    grep -q $1 $HOME/.darcs/defaults || exit 200
+}
+
+unpack_testdata() {
+   # Historically we used to have to use 'gunzip -c archive | tar xf -'
+   # because the test harness was sometimes run with a tar that didn't support -z.
+   # That isn't the case now so we just use -f directly.
+   # Note that piping the archive on stdin without a -f flag doesn't work reliably
+   # because the default device might not be stdin, e.g. on Windows/msys the default
+   # could be a tape device //./tape0, even if that doesn't exist.
+   tar -xzf $TESTDATA/$1.tgz
+}
+
+# comparing patch bundles requires we filter out some (irrelevant) lines
+filter_bundle() {
+  cat $1 | grep -v '^Date: ' | grep -v 'patch\(es\)\? for repository '
+}
+compare_bundles() {
+  diff <(filter_bundle $1) <(filter_bundle $2) >&2
+}
+
+grep -q darcs-3 .darcs/defaults && format=darcs-3
+grep -q darcs-2 .darcs/defaults && format=darcs-2
+grep -q darcs-1 .darcs/defaults && format=darcs-1
+
+set -vex -o pipefail

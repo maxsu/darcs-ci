@@ -1,0 +1,140 @@
+# Boring file regexps:
+
+### compiler and interpreter intermediate files
+# haskell (ghc) interfaces
+\.hi$
+\.hi-boot$
+\.o-boot$
+# object files
+\.o$
+\.o\.cmd$
+# profiling haskell
+\.p_hi$
+\.p_o$
+# haskell program coverage resp. profiling info
+\.tix$
+\.prof$
+# fortran module files
+\.mod$
+# linux kernel
+\.ko\.cmd$
+\.mod\.c$
+(^|/)\.tmp_versions($|/)
+# *.ko files aren't boring by default because they might
+# be Korean translations rather than kernel modules
+# \.ko$
+# python, emacs, java byte code
+\.py[co]$
+\.elc$
+\.class$
+# objects and libraries; lo and la are libtool things
+\.(obj|a|exe|so|lo|la)$
+# compiled zsh configuration files
+\.zwc$
+# Common LISP output files for CLISP and CMUCL
+\.(fas|fasl|sparcf|x86f)$
+
+### build and packaging systems
+# cabal intermediates
+\.installed-pkg-config
+\.setup-config
+# standard cabal build dir, might not be boring for everybody
+# ^dist(/|$)
+# autotools
+(^|/)autom4te\.cache($|/)
+(^|/)config\.(log|status)$
+# microsoft web expression, visual studio metadata directories
+\_vti_cnf$
+\_vti_pvt$
+# gentoo tools
+\.revdep-rebuild.*
+# generated dependencies
+^\.depend$
+
+### version control systems
+# cvs
+(^|/)CVS($|/)
+\.cvsignore$
+# cvs, emacs locks
+^\.#
+# rcs
+(^|/)RCS($|/)
+,v$
+# subversion
+(^|/)\.svn($|/)
+# mercurial
+(^|/)\.hg($|/)
+# git
+(^|/)\.git($|/)
+# bzr
+\.bzr$
+# sccs
+(^|/)SCCS($|/)
+# darcs
+(^|/)_darcs($|/)
+(^|/)\.darcsrepo($|/)
+^\.darcs-temp-mail$
+-darcs-backup[[:digit:]]+$
+# gnu arch
+(^|/)(\+|,)
+(^|/)vssver\.scc$
+\.swp$
+(^|/)MT($|/)
+(^|/)\{arch\}($|/)
+(^|/).arch-ids($|/)
+# bitkeeper
+(^|/)BitKeeper($|/)
+(^|/)ChangeSet($|/)
+
+### miscellaneous
+# backup files
+~$
+\.bak$
+\.BAK$
+# patch originals and rejects
+\.orig$
+\.rej$
+# X server
+\..serverauth.*
+# image spam
+\#
+(^|/)Thumbs\.db$
+# vi, emacs tags
+(^|/)(tags|TAGS)$
+#(^|/)\.[^/]
+# core dumps
+(^|/|\.)core$
+# partial broken files (KIO copy operations)
+\.part$
+# waf files, see http://code.google.com/p/waf/
+(^|/)\.waf-[[:digit:].]+-[[:digit:]]+($|/)
+(^|/)\.lock-wscript$
+# mac os finder
+(^|/)\.DS_Store$
+# darcs stuff
+^tests-.*$
+^_test_playground($|/)
+^(cabal-dev|dist)[^/]*$
+^.cabal-sandbox($|/)
+^cabal.sandbox.config$
+^.hpc$
+^hpctixdir$
+^darcs-temp
+^release/distributed-.*
+^doc/manual/bigimg[0-9]+\.png$
+^doc/manual/bigpage\.(html|css|tex)$
+^doc/manual/bigimages\.(tex|log|aux)$
+^doc/manual/images\.(tex|log|aux)+$
+^doc/manual/img[0-9]+\.png$
+^doc/manual/node[0-9]+\.html$
+^doc/manual/(index|footnode)\.html$
+^doc/manual/darcs_print\.[a-z]+$
+^doc/manual/patch-theory\.[a-z]+$
+^doc/manual/darcs\.[a-z]+$
+^doc/manual/.*\.pl$
+^doc/manual/TMP$
+^doc/manual/WARNINGS$
+^cabal\.project\.local$
+^\.ghc\.environment\..*$
+(^|/).stack-work($|/)
+^stack.yaml.lock$

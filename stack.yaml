@@ -1,0 +1,5 @@
+resolver: lts-16.22
+extra-deps:
+- base16-bytestring-1.0.1.0
+packages:
+- .

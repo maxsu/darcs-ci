@@ -1,0 +1,14 @@
+blob
+mark :1
+data 160
+Широкая электрификация южных губерний даст мощный толчок подъёму сельского хозяйства
+
+reset refs/heads/master
+commit refs/heads/master
+mark :2
+author Andrey Korobkov <alster@vinterdalen.se> 1593449594 +0400
+committer Andrey Korobkov <alster@vinterdalen.se> 1593454486 +0400
+data 99
+Южноэфиопский грач увёл мышь за хобот на съезд ящериц
+M 100644 :1 "\320\237\320\260\320\275\320\263\321\200\320\260\320\274\320\274\320\260.txt"
+
