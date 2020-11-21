@@ -1,12 +1,18 @@
 #!/bin/sh
+
+# This takes the current *pending* state of the repo (what you see with 'darcs
+# whatsnew -s'), makes a git commit from that, and force pushes that to the
+# github repo. The git branch is the basename of the current directory, to
+# allow using the CI independently on different darcs clones/branches.
+
 set -e
 test -d _darcs || (echo need to be in a darcs repo >&2 && false)
-# to start fresh:
+# to start your branch fresh:
 # rm -rf .git
 branch=$(basename $(pwd))
 git init
 git checkout -B $branch
-git add $(darcs show files --no-directories --pending)
+git add -A $(darcs show files --no-directories)
 git add release/distributed-context release/distributed-version
 git commit -m snapshot
 git push -f --set-upstream git@github.com:bfrk/darcs-ci.git $branch
